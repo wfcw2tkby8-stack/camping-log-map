@@ -30,11 +30,14 @@ kakao.maps.load(function () {
   function drawCamping(camp) {
     const markerPosition = new kakao.maps.LatLng(camp.lat, camp.lng);
 
+    const safeName = camp.name.replace(/'/g, "\\'");
+    const visitText = camp.visits.join('\\n');
+
     const markerContent = `
-  <div class="tent-marker" onclick="alert('${camp.name}\\n방문횟수: ${camp.visits.length}회\\n방문일:\\n${camp.visits.join('\\n')}')">
-    🏕️<span>${camp.visits.length}</span>
-  </div>
-`;
+      <div class="tent-marker" onclick="alert('${safeName}\\n방문횟수: ${camp.visits.length}회\\n방문일:\\n${visitText}')">
+        🏕️<span>${camp.visits.length}</span>
+      </div>
+    `;
 
     const marker = new kakao.maps.CustomOverlay({
       position: markerPosition,
@@ -44,7 +47,7 @@ kakao.maps.load(function () {
 
     marker.setMap(map);
     overlays.push(marker);
-
+  }
 
   drawAllCampings();
 
