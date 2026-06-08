@@ -42,3 +42,29 @@ h1 {
   line-height: 1.6;
   min-width: 220px;
 }
+.tent-marker {
+  position: relative;
+  font-size: 34px;
+  cursor: pointer;
+  transform: translateY(-10px);
+}
+
+.tent-marker span {
+  position: absolute;
+  top: -8px;
+  right: -10px;
+  background: #e63946;
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 2px 7px;
+  border-radius: 999px;
+  border: 2px solid white;
+}
+
+.info-window {
+  padding: 12px;
+  font-size: 14px;
+  line-height: 1.6;
+  min-width: 220px;
+}
