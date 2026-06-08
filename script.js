@@ -8,16 +8,13 @@ kakao.maps.load(function () {
 
   const map = new kakao.maps.Map(mapContainer, mapOption);
 
-  const campings = [
-    {
-      name: '괴산 자연드림파크 캠핑장',
-      lat: 36.7605,
-      lng: 127.8270,
-      visits: ['2026.05.03', '2026.05.17', '2026.06.01']
-    }
-  ];
+  let campings = JSON.parse(localStorage.getItem('campings')) || [];
 
-  campings.forEach(function (camp) {
+  function saveCampings() {
+    localStorage.setItem('campings', JSON.stringify(campings));
+  }
+
+  function drawCamping(camp) {
     const markerPosition = new kakao.maps.LatLng(camp.lat, camp.lng);
 
     const markerContent = `
@@ -38,7 +35,8 @@ kakao.maps.load(function () {
       <div class="info-window">
         <strong>${camp.name}</strong><br>
         방문횟수: ${camp.visits.length}회<br>
-        방문일: ${camp.visits.join(', ')}
+        방문일:<br>
+        ${camp.visits.join('<br>')}
       </div>
     `;
 
@@ -46,12 +44,31 @@ kakao.maps.load(function () {
       content: infoContent
     });
 
-    kakao.maps.event.addListener(map, 'click', function () {
-      infoWindow.close();
-    });
-
     kakao.maps.event.addListener(marker, 'click', function () {
       infoWindow.open(map, marker);
     });
+  }
+
+  campings.forEach(drawCamping);
+
+  kakao.maps.event.addListener(map, 'click', function (mouseEvent) {
+    const latlng = mouseEvent.latLng;
+
+    const name = prompt('캠핑장 이름을 입력해줘');
+    if (!name) return;
+
+    const visitDate = prompt('방문일을 입력해줘. 예: 2026-06-08');
+    if (!visitDate) return;
+
+    const newCamping = {
+      name: name,
+      lat: latlng.getLat(),
+      lng: latlng.getLng(),
+      visits: [visitDate]
+    };
+
+    campings.push(newCamping);
+    saveCampings();
+    drawCamping(newCamping);
   });
 });
