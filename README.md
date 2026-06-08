@@ -1,0 +1,1 @@
+# camping-log-map
