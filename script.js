@@ -9,9 +9,22 @@ kakao.maps.load(function () {
   const map = new kakao.maps.Map(mapContainer, mapOption);
 
   let campings = JSON.parse(localStorage.getItem('campings')) || [];
+  let overlays = [];
 
   function saveCampings() {
     localStorage.setItem('campings', JSON.stringify(campings));
+  }
+
+  function clearMap() {
+    overlays.forEach(function (overlay) {
+      overlay.setMap(null);
+    });
+    overlays = [];
+  }
+
+  function drawAllCampings() {
+    clearMap();
+    campings.forEach(drawCamping);
   }
 
   function drawCamping(camp) {
@@ -30,6 +43,7 @@ kakao.maps.load(function () {
     });
 
     marker.setMap(map);
+    overlays.push(marker);
 
     const infoContent = `
       <div class="info-window">
@@ -49,7 +63,7 @@ kakao.maps.load(function () {
     });
   }
 
-  campings.forEach(drawCamping);
+  drawAllCampings();
 
   kakao.maps.event.addListener(map, 'click', function (mouseEvent) {
     const latlng = mouseEvent.latLng;
@@ -60,15 +74,24 @@ kakao.maps.load(function () {
     const visitDate = prompt('방문일을 입력해줘. 예: 2026-06-08');
     if (!visitDate) return;
 
-    const newCamping = {
-      name: name,
-      lat: latlng.getLat(),
-      lng: latlng.getLng(),
-      visits: [visitDate]
-    };
+    const existingCamping = campings.find(function (camp) {
+      return camp.name.trim() === name.trim();
+    });
 
-    campings.push(newCamping);
+    if (existingCamping) {
+      existingCamping.visits.push(visitDate);
+    } else {
+      const newCamping = {
+        name: name,
+        lat: latlng.getLat(),
+        lng: latlng.getLng(),
+        visits: [visitDate]
+      };
+
+      campings.push(newCamping);
+    }
+
     saveCampings();
-    drawCamping(newCamping);
+    drawAllCampings();
   });
 });
