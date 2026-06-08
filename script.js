@@ -31,10 +31,10 @@ kakao.maps.load(function () {
     const markerPosition = new kakao.maps.LatLng(camp.lat, camp.lng);
 
     const markerContent = `
-      <div class="tent-marker">
-        🏕️<span>${camp.visits.length}</span>
-      </div>
-    `;
+  <div class="tent-marker" onclick="alert('${camp.name}\\n방문횟수: ${camp.visits.length}회\\n방문일:\\n${camp.visits.join('\\n')}')">
+    🏕️<span>${camp.visits.length}</span>
+  </div>
+`;
 
     const marker = new kakao.maps.CustomOverlay({
       position: markerPosition,
@@ -45,33 +45,16 @@ kakao.maps.load(function () {
     marker.setMap(map);
     overlays.push(marker);
 
-    const infoContent = `
-      <div class="info-window">
-        <strong>${camp.name}</strong><br>
-        방문횟수: ${camp.visits.length}회<br>
-        방문일:<br>
-        ${camp.visits.join('<br>')}
-      </div>
-    `;
-
-    const infoWindow = new kakao.maps.InfoWindow({
-      content: infoContent
-    });
-
-    kakao.maps.event.addListener(marker, 'click', function () {
-      infoWindow.open(map, marker);
-    });
-  }
 
   drawAllCampings();
 
   kakao.maps.event.addListener(map, 'click', function (mouseEvent) {
     const latlng = mouseEvent.latLng;
 
-    const name = prompt('캠핑장 이름을 입력해줘');
+    const name = prompt('캠핑장 이름을 입력해주세요.');
     if (!name) return;
 
-    const visitDate = prompt('방문일을 입력해줘. 예: 2026-06-08');
+    const visitDate = prompt('방문일을 입력해주세요. 예: 2026-06-08');
     if (!visitDate) return;
 
     const existingCamping = campings.find(function (camp) {
